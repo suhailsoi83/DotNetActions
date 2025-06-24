@@ -1,15 +1,26 @@
+# Use the official .NET SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["PaymentAPI.csproj", ",/"]
-RUN dotnet restore "PaymentAPI.csproj"
+
+# Copy the project file and restore dependencies
+COPY ["PaymentAPI/PaymentAPI.csproj", "PaymentAPI/"]
+RUN dotnet restore "PaymentAPI/PaymentAPI.csproj"
+
+# Copy the rest of the code
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "PaymentAPI.csproj" -c Release -o /src/build
 
-FROM build AS publish
-RUN dotnet publish "PaymentAPI.csproj" -c Release -o /src/publish
+# Build the application
+WORKDIR "/src/PaymentAPI"
+RUN dotnet publish "PaymentAPI.csproj" -c Release -o /app/publish
 
-FROM build as final
-WORKDIR /src
-COPY --from=publish /src/publish . 
+# Use the official .NET runtime image to run the app
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Expose port (adjust to your app's settings)
+EXPOSE 80
 ENTRYPOINT ["dotnet", "PaymentAPI.dll"]
+
+
+
