@@ -30,8 +30,8 @@ jobs:
     - name: Build Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: .
-        dockerfile: DotNetActions/DockerFile
+        context: ./DotNetActions
+        dockerfile: DockerFile
         push: false
         tags: ${{ secrets.DOCKER_USERNAME }}DotNetActions/paymentapi:latest
         
