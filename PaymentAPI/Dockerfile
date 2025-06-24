@@ -3,8 +3,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 # Copy the project file and restore dependencies
-COPY ["PaymentAPI/PaymentAPI.csproj", "PaymentAPI/"]
-RUN dotnet restore "PaymentAPI/PaymentAPI.csproj"
+COPY ["PaymentAPI.csproj", "PaymentAPI/"]
+RUN dotnet restore "PaymentAPI.csproj"
 
 # Copy the rest of the code
 COPY . .
