@@ -28,9 +28,9 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       
     - name: Build Docker Image
-      uses: docker --build-push-action@v2
+      uses: docker/build-push-action@v2
       with:
-        context: .
+        context: ./
         dockerfile: DockerFile
         push: false
         tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest
