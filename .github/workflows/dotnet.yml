@@ -21,16 +21,12 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore PaymentAPI.sln
-      
-    - name: Clean, build, and publish
-      run: |
-          dotnet clean
-          dotnet build
-          dotnet publish "PaymentAPI.csproj" -c Release -o /app/publish
+      run: dotnet restore PaymentAPI.sln          
           
     - name: Build
-      run: dotnet build PaymentAPI.sln
+      run: |
+        dotnet clean
+        dotnet build PaymentAPI.sln
     - name: Test
       run: dotnet test --no-build --verbosity normal    
    
