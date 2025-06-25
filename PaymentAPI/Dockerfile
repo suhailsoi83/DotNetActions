@@ -1,23 +1,31 @@
-# Use the official .NET 6 ASP.NET image as the base image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 80
-
-# Use the .NET SDK image for the build process
+# Use the official .NET SDK image for building
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set working directory in the container
 WORKDIR /src
 
-# Copy the project file and restore dependencies
-COPY ["PaymentAPI/PaymentAPI.csproj", "PaymentAPI/"]
-RUN dotnet restore "PaymentAPI/PaymentAPI.csproj"
+# Copy the .csproj file and restore any dependencies (via NuGet)
+COPY PaymentAPI/*.csproj ./
+RUN dotnet restore
 
-# Copy the rest of the source code and publish the app
-COPY . .
-WORKDIR "/src/PaymentAPI"
-RUN dotnet publish "PaymentAPI.csproj" -c Release -o /app/publish
+# Copy the entire project files and build the project
+COPY PaymentAPI/. ./
+RUN dotnet build -c Release -o /app/build
 
-# Create the final image by copying the published files from the build image
-FROM base AS final
+# Publish the application
+RUN dotnet publish -c Release -o /app/publish
+
+# Use the official .NET runtime image to run the app
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+
+# Set working directory in the container
 WORKDIR /app
+
+# Copy the published app from the build stage
 COPY --from=build /app/publish .
+
+# Expose the port your app will run on
+EXPOSE 80
+
+# Set the entry point for the application
 ENTRYPOINT ["dotnet", "PaymentAPI.dll"]
