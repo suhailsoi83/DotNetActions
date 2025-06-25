@@ -33,6 +33,6 @@ jobs:
     # Build the Docker image
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/paymentapi:${{ github.sha }} .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/dockerpaymentapi:${{ github.sha }} .
 
     # Push t
