@@ -8,13 +8,13 @@ WORKDIR /src
 COPY ["PaymentAPI.csproj", "PaymentAPI/"]
 
 # Restore dependencies
-RUN dotnet restore "PaymentAPI/PaymentAPI.csproj"
+RUN dotnet restore "PaymentAPI.csproj"
 
 # Copy the rest of the source code into the container
 COPY . .
 
 # Publish the application to /app/publish
-RUN dotnet publish "PaymentAPI/PaymentAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "PaymentAPI.csproj" -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
