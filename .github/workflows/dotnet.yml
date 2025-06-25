@@ -35,7 +35,7 @@ jobs:
     - name: Build Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: ./PaymentAPI
+        context: .
         dockerfile: Dockerfile
         push: false
         tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest  # Fixed tag format
@@ -51,7 +51,7 @@ jobs:
     - name: Push to Docker Hub
       uses: docker/build-push-action@v2
       with:
-        context: ./PaymentAPI
+        context: .
         dockerfile: Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest  # Fixed tag format
