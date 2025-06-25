@@ -40,11 +40,11 @@ jobs:
       - name: Build and push Docker image
         run: |
           # Ensure we are specifying the correct Dockerfile path
-          docker build -f PaymentAPI/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}payment-api:${{ github.sha }} .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}payment-api:${{ github.sha }}
+          docker build -f PaymentAPI/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}dockerpaymentapi:${{ github.sha }} .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}dockerpaymentapi:${{ github.sha }}
 
       # Optional: Tag the image as 'latest'
       - name: Tag image as latest
         run: |
-          docker tag ${{ secrets.DOCKERHUB_USERNAME }}payment-api:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}payment-api:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}payment-api:latest
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}dockerpaymentapi:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}dockerpaymentapi:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}dockerpaymentapi:latest
