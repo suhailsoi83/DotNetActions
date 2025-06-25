@@ -1,38 +1,57 @@
-name: Build and Push Docker Image to Docker Hub
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the code
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    # Log in to Docker Hub using an access token
-    - name: Log in to Docker Hub
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore PaymentAPI.sln
+
+    - name: Build
+      run: dotnet build PaymentAPI.sln
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    # Build the Docker image but don't push it yet
+    - name: Build Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./PaymentAPI
+        dockerfile: Dockerfile
+        push: false
+        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest  # Fixed tag format
+
+    # Login to Docker Hub using access token
+    - name: Login to Docker Hub
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # Set up .NET SDK
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v2
+    # Push the Docker image to Docker Hub
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v2
       with:
-        dotnet-version: '6.0'
-
-    # Build the Docker image
-    - name: Build Docker image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/dockerpaymentapi:${{ github.sha }} .
-
-    # Push t
+        context: ./PaymentAPI
+        dockerfile: Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest  # Fixed tag format
