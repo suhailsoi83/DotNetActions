@@ -6,7 +6,7 @@ EXPOSE 80
 # Use the .NET SDK image to build and publish the app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["PaymentAPI/PaymentAPI.csproj", "PaymentAPI/"]
+COPY ["PaymentAPI.csproj", "PaymentAPI/"]
 RUN dotnet restore "PaymentAPI/PaymentAPI.csproj"
 COPY . .
 WORKDIR "/src/PaymentAPI"
