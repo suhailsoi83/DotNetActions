@@ -38,7 +38,7 @@ jobs:
         context: ./PaymentAPI
         dockerfile: Dockerfile
         push: false
-        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest  # Fixed tag format
+        tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest  # Fixed tag format
 
     # Login to Docker Hub using access token
     - name: Login to Docker Hub
@@ -54,4 +54,4 @@ jobs:
         context: ./PaymentAPI
         dockerfile: Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest  # Fixed tag format
+        tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest  # Fixed tag format
