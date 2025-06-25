@@ -41,7 +41,7 @@ jobs:
         context: ./PaymentAPI  # Dockerfile is inside the PaymentAPI folder
         dockerfile: Dockerfile  # Specify the Dockerfile location
         push: false  # We will push the image in the next step
-        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest  # Use your Docker Hub username here
+        tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest  # Use your Docker Hub username here
 
     # Step 7: Login to Docker Hub
     - name: Login to Docker Hub
@@ -57,4 +57,4 @@ jobs:
         context: ./PaymentAPI
         dockerfile: Dockerfile
         push: true  # Actually push the image
-        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest
