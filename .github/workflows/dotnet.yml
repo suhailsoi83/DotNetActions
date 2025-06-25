@@ -1,50 +1,60 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# This workflow will build a .NET project and push a Docker image
 
 name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout the code
     - uses: actions/checkout@v4
+
+    # Step 2: Set up .NET SDK
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: '6.0.x'  # Use the appropriate version for your project
+
+    # Step 3: Restore dependencies (this assumes PaymentAPI.sln is at the root)
     - name: Restore dependencies
       run: dotnet restore PaymentAPI.sln
+
+    # Step 4: Build the solution
     - name: Build
-      run: dotnet build PaymentAPI.sln
+      run: dotnet build PaymentAPI.sln --configuration Release
+
+    # Step 5: Run tests (optional but recommended)
     - name: Test
-      run: dotnet test --no-build --verbosity normal    
-   
+      run: dotnet test PaymentAPI.sln --no-build --verbosity normal
+
+    # Step 6: Build Docker image using build-push-action
     - name: Build Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: ./PaymentAPI
-        dockerfile: Dockerfile
-        push: false
-        tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest
+        context: ./PaymentAPI  # Dockerfile is inside the PaymentAPI folder
+        dockerfile: Dockerfile  # Specify the Dockerfile location
+        push: false  # We will push the image in the next step
+        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest  # Use your Docker Hub username here
 
+    # Step 7: Login to Docker Hub
     - name: Login to Docker Hub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2  # Updated to use the latest version of the action
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKER_USERNAME }}  # Ensure this is set in your secrets
+        password: ${{ secrets.DOCKERHUB_TOKEN }}  # Ensure this is set in your secrets
 
-    - name: Push to Docker Hub
+    # Step 8: Push Docker image to Docker Hub
+    - name: Push Docker Image to Docker Hub
       uses: docker/build-push-action@v2
       with:
         context: ./PaymentAPI
         dockerfile: Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}paymentapi:latest
+        push: true  # Actually push the image
+        tags: ${{ secrets.DOCKER_USERNAME }}/paymentapi:latest
